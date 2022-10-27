@@ -17,7 +17,7 @@ There are two ways you can test this role:
 
  1. Installing it by cloning the Github repository
 
-        git clone https://github.com/datacenter/ansible-role-aci-model datacenter.aci-model
+        git clone https://github.com/hsabale/ansible-aci
 
  2. Install it using the ansible-galaxy command
 
@@ -66,7 +66,7 @@ If you installed the role from Galaxy, you should be fine to use the examples fr
 ### Running the example playbook
 Run the following command using Ansible v2.4:
 
-    ansible-playbook -i example-inventory.yml example-playbook.yml -v
+    ansible-playbook -i myinventory.yml myplaybook.yml -v
 
 The first time it will deploy that configuration on your ACI infrastructure.
 
