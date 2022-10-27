@@ -1,3 +1,5 @@
+# This is clone of https://github.com/datacenter/ansible-role-aci-model with added modules & inventory file
+
 # Ansible Role: aci-model
 A comprehensive Ansible role to model and deploy Cisco ACI fabrics.
 
@@ -5,10 +7,8 @@ This role provides an abstraction layer that is convenient to use. By providing 
 
 Using this role you can easily set up demo environment, maintain a lab or use it as the basis for your in-house ACI infrastructure. It can help you understand how ACI works while prototyping and testing. No prior Ansible or ACI knowledge is required to get started.
 
-
 ## Requirements
 This role requires the **aci_rest** module and the standard set of ACI modules from Ansible v2.4.
-
 
 ## Installation
 
@@ -42,8 +42,7 @@ Because of its general usefulness, we are looking into making this *aci_listify*
 ## Using the example playbook
 
 ### Configure your APIC host and credentials
-Look inside the example inventory and provide the needed information.
-Only the first APIC is being use by the playbook, so you don't need more than one.
+Look inside the inventory and provide the needed information.
 
 #### Role variables
 The role accepts various variables, including:
@@ -61,7 +60,7 @@ If you cloned it from Github, ensure you cloned it to a directory named ansible-
 Otherwise the playbook will not find the role with name "ansible-aci".
 
 ### Running the playbook
-Run the following command using Ansible v2.13.5:
+This is tested on latest ansible version
 
     ansible-playbook -i myinventory.yml myplaybook.yml -v
     
