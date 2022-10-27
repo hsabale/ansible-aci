@@ -1,0 +1,6 @@
+---
+#- include_tasks: main-json.yml
+#- include_tasks: main-yaml.yml
+#- include_tasks: my-cleanup.yml
+- include_tasks: my-main-yaml.yml
+#- include_tasks: my-test-yaml.yml

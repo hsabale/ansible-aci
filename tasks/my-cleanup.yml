@@ -1,0 +1,26 @@
+# This taskbook is exactly indentical to the JSON version, but using YAML payload.
+# The aci_rest module simply converts the YAML payload into JSON before sending to the APIC.
+
+# Using YAML as input is convenient when managing the payload e.g. from git.
+
+- name: Push aci_model
+
+  # We prepare an aci_login anchor for convenience
+  vars:
+    aci_login: &aci_login
+      hostname: '{{ apic_host }}'
+      username: '{{ apic_username }}'
+      password: '{{ apic_password }}'
+      use_proxy: '{{ apic_use_proxy }}'
+      validate_certs: '{{ apic_validate_certs }}'
+
+  # We define the delegate_to at the block-level
+  delegate_to: localhost
+
+  block:
+  - name: ENSURE LAB WORK IS CLEANED UP
+    aci_rest:
+      <<: *aci_login
+      path: api/mo/uni/tn-{{ item.tenant_name }}.json
+      method: delete
+    with_items: '{{ aci_model_data|aci_listify("tenant") }}'

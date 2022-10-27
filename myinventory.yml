@@ -1,0 +1,456 @@
+fabric01:
+  hosts:
+    apic1:
+      apic_host: sandboxapicdc.cisco.com
+      apic_username: admin
+      apic_password: '!v3G@!4@Y'
+
+  vars:
+    apic_use_proxy: no
+    apic_validate_certs: no
+
+    aci_topology:
+      access_policy:
+      - vlan_pool:
+        - name: INTER-POD-VLAN-POOL
+          state: present
+          alloc: static
+          encap_block:
+          - from: 201
+            to: 299
+        - name: HMS-L3OUT-VLAN-POOL
+          state: present		
+          alloc: static
+          encap_block:
+          - from: 91
+            to: 91
+      - aep:
+        - name: INTER-POD-AEP
+          state: present		
+          domain:
+          - name: INTER-POD-PHY-DOM
+        - name: BM-PHY-AEP
+          state: present		
+          domain:
+          - name: BM-PHYSICAL-DOM
+        - name: INTER-POD-AEP
+          state: present		
+          l2domain:
+          - name: SEG-225-L2-OUT
+        - name: INTER-POD-AEP
+          state: present		
+          l2domain:
+          - name: SEG-230-L2-OUT
+        - name: BM-PHY-AEP
+          state: present		
+          l2domain:
+          - name: SEG-225-L2-OUT
+        - name: BM-PHY-AEP
+          state: present		
+          l2domain:
+          - name: SEG-230-L2-OUT
+        - name: HMS-L3OUT-AEP
+          state: present		
+          l3domain:
+          - name: HMS-L3OUT-DOM
+      - external_bridged_domain:
+        - name: SEG-225-L2-OUT
+          state: present		
+          vlan_pool: INTER-POD-VLAN-POOL
+          vlan_pool_alloc: static		  
+        - name: SEG-230-L2-OUT
+          state: present		
+          vlan_pool: INTER-POD-VLAN-POOL
+          vlan_pool_alloc: static
+      - external_routed_domain:
+        - name: HMS-L3OUT-DOM
+          state: present		
+          vlan_pool: HMS-L3OUT-VLAN-POOL
+          vlan_pool_alloc: static		  
+      - physical_domain:
+        - name: INTER-POD-PHY-DOM
+          state: present		
+          vlan_pool: INTER-POD-VLAN-POOL
+          vlan_pool_alloc: static
+        - name: BM-PHYSICAL-DOM
+          state: present		
+          vlan_pool: INTER-POD-VLAN-POOL
+          vlan_pool_alloc: static
+      - interface_policy_link_level:
+        - name: LLP-1G
+          state: present		
+          speed: 1G
+        - name: LLP-10G
+          state: present		
+          speed: 10G
+      - interface_policy_cdp:
+        - name: CDP-ENABLE
+          state: present		
+          admin_state: on
+        - name: CDP-DISABLE
+          state: present		
+          admin_state: off
+      - interface_policy_lldp:
+        - name: LLDP-ENABLE
+          state: present		
+          receive_state: on
+          transmit_state: on
+        - name: LLDP-DISABLE
+          state: present		
+          receive_state: off
+          transmit_state: off
+      - interface_policy_port_channel:
+        - name: PC-LACP-ACTIVE
+          state: present		
+          mode: active
+        - name: PC-LACP-PASSIVE
+          state: present		
+          mode: passive
+      - interface_policy_policy_group_pc:
+        - name: INTER-POD-DEV-MAC-POL-GRP
+          state: present		
+          link_level: LLP-10G
+          cdp: CDP-DISABLE
+          lldp: LLDP-ENABLE
+          port_channel: PC-LACP-ACTIVE
+          aep: INTER-POD-AEP
+      - interface_policy_policy_group_vpc:
+        - name: NTNX-13_VPC_13_14_1_37
+          state: present		
+          lldp: LLDP-ENABLE		
+          link_level: LLP-10G
+          port_channel: default
+          aep: BM-PHY-AEP
+        - name: NTNX-13_VPC_13_14_1_38
+          state: present		
+          lldp: LLDP-ENABLE
+          link_level: LLP-10G
+          port_channel: default
+          aep: BM-PHY-AEP
+        - name: HMS-L3OUT-POL-GRP
+          state: present		
+          lldp: 
+          link_level: 
+          port_channel: PC-LACP-ACTIVE
+          aep: HMS-L3OUT-AEP
+      - interface_policy_policy_group_access:
+        - name: DEV_SEG_04
+          state: present		
+          link_level: LLP-10G
+          lldp: LLDP-ENABLE
+          aep: BM-PHY-AEP
+        - name: DEV_SEG_04_1G
+          state: present		
+          link_level: LLP-1G
+          lldp: LLDP-ENABLE
+          aep: BM-PHY-AEP
+#      - switch_policy_vpc_domain:
+#        - name: LEAF101_102
+#          state: present		
+#      - switch_policy_virtual_port_channel:
+#        - name: LEAF101_102
+#          state: present		
+#          id: 10
+#          switch1: 101
+#          switch2: 102
+#          domainpolicy: LEAF101_102
+      - interface_policy_profile:
+        - name: INTER-POD-DEV-MAC-LEAF-PRF
+          state: present		
+          interface_selector:
+          - name: INTER-POD-DEV-MAC-INT-SEL
+            state: present
+            int_card: 1
+            int_to: 44
+            int_from: 43
+            policy_group: INTER-POD-DEV-MAC-POL-GRP
+            policy_group_type: accportgrp
+        - name: LEAF101_102_1_37_VPC
+          state: present		
+          interface_selector:
+          - name: 1_37_VPC
+            state: present		  
+            int_card: 1
+            int_to: 37
+            int_from: 37
+            policy_group: NTNX-13_VPC_1_2_1_37
+            policy_group_type: accportgrp
+        - name: LEAF101_102_1_38_VPC
+          state: present		
+          interface_selector:
+          - name: 1_38_VPC
+            state: present		  
+            int_card: 1
+            int_to: 38
+            int_from: 38
+            policy_group: NTNX-13_VPC_1_2_1_38
+            policy_group_type: accportgrp
+        - name: LEAF101_102_1_1
+          state: present		
+          interface_selector:
+          - name: LEAF101_102_1_1
+            state: present		  
+            int_card: 1
+            int_to: 1
+            int_from: 1
+            policy_group: DEV_SEG_04_1G
+            policy_group_type: accportgrp
+        - name: HMS-L3OUT-VPC-LEAF-PRF
+          state: present		
+          interface_selector:
+          - name: HMS-L3OUT-INT-PORT-SEL
+            state: present		  
+            int_card: 1
+            int_to: 41
+            int_from: 40
+            policy_group: HMS-L3OUT-POL-GRP
+            policy_group_type: accportgrp
+      - switch_policy_profile:
+        - name: LEAF-SW-PRF-101
+          state: present		
+          leaf_selector:
+          - name: LEAF-SW-SEL-101
+            state: present		  
+            from: 101
+            to: 101
+          interface_selector_profile:
+          - name: LEAF101_1_1
+        - name: LEAF-SW-PRF-102
+          state: present		
+          leaf_selector:
+          - name: LEAF-SW-SEL-102
+            state: present		  
+            from: 102
+            to: 102
+          interface_selector_profile:
+          - name: LEAF102_1_1
+        - name: LEAF-SW-PRF-101-102
+          state: present		
+          leaf_selector:
+          - name: LEAF-SW-PRF-101-102
+            state: present		  
+            from: 101
+            to: 102
+          interface_selector_profile:
+          - name: LEAF101_102_1_37_VPC
+        - name: LEAF-SW-PRF-101-102
+          state: present		
+          leaf_selector:
+          - name: LEAF-SW-PRF-101-102
+            state: present		  
+            from: 101
+            to: 102
+          interface_selector_profile:
+          - name: LEAF101_102_1_38_VPC
+        - name: LEAF-SW-PRF-101-102
+          state: present		
+          leaf_selector:
+          - name: LEAF-SW-PRF-101-102
+            state: present
+            from: 101
+            to: 102
+          interface_selector_profile:
+          - name: HMS-L3OUT-VPC-LEAF-PRF
+      tenant:
+      - name: 11_HMS
+        state: present	  
+        description: 11_HMS
+        app:
+        - name: FEED-ANP
+          state: present		
+          epg:
+          - name: SEG-225-FEED-EPG
+            state: present		  
+            bd: SEG-225-FEED-BD
+            contract:
+            - name: ANY-CON
+              type: provider
+              state: present
+            - name: ANY-CON
+              type: consumer
+              state: present			  
+            static_path:
+            - pod: 1
+              path: topology/pod-1/protpaths-101-102/pathep-[NTNX-13_VPC_1_2_1_37]
+              encap: vlan-225
+              mode: regular
+            - pod: 1
+              path: topology/pod-1/protpaths-101-102/pathep-[NTNX-13_VPC_1_2_1_38]
+              encap: vlan-225
+              mode: regular
+            domain:
+            - name: INTER-POD-PHY-DOM
+              state: present			
+              type: phys
+            - name: BM-PHYSICAL-DOM
+              state: present			
+              type: phys
+          - name: SEG-230-FEED-EPG
+            state: present		  
+            bd: SEG-230-FEED-BD
+            contract:
+            - name: ANY-CON
+              state: present			
+              type: provider
+            - name: ANY-CON
+              state: present			
+              type: consumer
+            static_path:
+            - pod: 1
+              path: topology/pod-1/protpaths-101-102/pathep-[NTNX-13_VPC_1_2_1_37]
+              encap: vlan-230
+              mode: regular
+            - pod: 1
+              path: topology/pod-1/protpaths-101-102/pathep-[NTNX-13_VPC_1_2_1_38]
+              encap: vlan-230
+              mode: regular
+            domain:
+            - name: INTER-POD-PHY-DOM
+              state: present			
+              type: phys
+            - name: BM-PHYSICAL-DOM
+              state: present			
+              type: phys
+        bd:
+        - name: SEG-225-FEED-BD
+          state: present		
+          subnet:
+          - name: 10.10.10.4
+            state: present
+            mask: 24
+            scope: private
+          vrf: MFEED
+        - name: SEG-230-FEED-BD
+          state: present		
+          subnet:
+          - name: 20.20.20.4
+            state: present		  
+            mask: 24
+            scope: private
+          vrf: MFEED
+        external_bridged_network:
+        - name: SEG-225-EBN
+          state: present		
+          bd: SEG-225-FEED-BD
+          external_bridged_domain: SEG-225-L2-OUT
+          encap: vlan-225
+          node_profile:
+          - name: default
+            state: present
+            interface_profile: 
+            - name: default
+              state: present			
+              static_path:
+              - pod: 1
+                path: topology/pod-1/paths-101/pathep-[INTER-POD-DEV-MAC-POL-GRP]
+              - pod: 1
+                path: topology/pod-1/paths-102/pathep-[INTER-POD-DEV-MAC-POL-GRP]
+          epg:
+          - name: SEG-225-EXT-EPG
+            state: present		  
+            associate_contracts:
+              - name: ANY-CON
+                state: present
+                type: provider
+              - name: ANY-CON
+                state: present			
+                type: consumer
+        - name: SEG-230-EBN
+          state: present		
+          bd: SEG-230-FEED-BD
+          external_bridged_domain: SEG-230-L2-OUT
+          encap: vlan-230
+          node_profile:
+          - name: default
+            state: present
+            interface_profile: 
+            - name: default
+              state: present			
+              static_path:
+              - pod: 1
+                path: topology/pod-1/paths-101/pathep-[INTER-POD-DEV-MAC-POL-GRP]
+              - pod: 1
+                path: topology/pod-1/paths-102/pathep-[INTER-POD-DEV-MAC-POL-GRP]
+          epg:
+          - name: SEG-230-EXT-EPG
+            state: present		  
+            associate_contracts:
+              - name: ANY-CON
+                state: present
+                type: provider
+              - name: ANY-CON
+                state: present			  
+                type: consumer
+        external_routed_network:
+        - name: HMS-L3OUT-ERN
+          state: present
+          vrf: MFEED
+          external_routed_domain: HMS-L3OUT-DOM
+          epg: 
+            - name: HMS-L3OUT-EPG
+              state: present			
+              subnets:
+                - ip: 0.0.0.0
+                  state: present
+                  mask: 0
+                  scope: 'export-rtctrl,import-security'
+                  aggregate: 
+              associate_contracts:
+                - name: ANY-CON
+                  state: present				
+                  mode: consumer
+                - name: ANY-CON
+                  state: present				
+                  mode: provider
+          logical_node_profile:
+            - name: HMS-L3OUT-NP
+              state: present
+              node:
+                - name: 'topology/pod-1/node-101'
+                  state: present				
+                  routeid: 1.1.1.1
+                  rtrIdLoopBack: 'no'
+                  static_route: 10.0.0.0
+                  static_route_mask: 24
+                  static_route_nh: 192.168.91.6
+                - name: 'topology/pod-1/node-102'
+                  state: present				
+                  routeid: 1.1.1.2
+                  rtrIdLoopBack: 'no'
+                  static_route: 10.0.0.0
+                  static_route_mask: 24
+                  static_route_nh: 192.168.91.6
+              interface:
+                - name: HMS-L3OUT-IP
+                  state: present				
+                  vlan_id: 91
+                  mac: 00:22:BD:F8:19:FF
+                  vpc_path: topology/pod-1/protpaths-101-102/pathep-[HMS-L3OUT-POL-GRP]
+                  side:
+                      - ip: 192.168.91.1
+                        mask: 29
+                        side: A
+                        secondary: 192.168.91.3
+                        secmask: 29
+                        ipv6Dad: disabled
+                      - ip: 192.168.91.2
+                        mask: 29
+                        side: B
+                        secondary: 192.168.91.3
+                        secmask: 29
+                        ipv6Dad: disabled
+        vrf:
+        - name: MFEED
+          state: present
+        contract:
+        - name: ANY-CON
+          state: present		
+          scope: tenant
+          subject:
+          - name: ANY
+            filter: ANY
+        filters:
+        - filter: ANY
+          entry: ANY
+          ether_type: ip
+          ip_protocol: unspecified
