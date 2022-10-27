@@ -4,7 +4,7 @@
   connection: local
 
   roles:
-   - role: datacenter.aci-model
+   - role: ansible-aci
      aci_model_data: '{{ aci_topology }}'
      tags: aci
 
