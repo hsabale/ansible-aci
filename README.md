@@ -31,7 +31,7 @@ You need to configure your Ansible to find this Jinja2 filter. There are two way
  1. Configure Ansible so it looks for the custom aci filter plugin:
 
       ```ini
-      filter_plugin = /home/ansible/datacenter.aci-model/plugins/filter
+      filter_plugin = /home/ansible/ansible-aci/plugins/filter
       ```
 
  2. Copy the filter plugin (*plugins/filter/aci.py*) into your designated filter plugin directory
@@ -51,96 +51,19 @@ The role accepts various variables, including:
 - apic_host
 - apic_username (defaults to 'admin')
 - apic_password
-
 - apic_use_proxy (defaults to false)
 - apic_validate_certs (defaults to true)
 
 You can configure these as part of your host variables, or group variables.
 
-### Ensure the playbook can find your datacenter.aci-model role
-If you cloned it from Github, ensure you cloned it to a directory named datacenter.aci-model.
-Otherwise the playbook will not find the role with name "datacenter.aci-model".
+### Ensure the playbook can find your ansible-aci role
+If you cloned it from Github, ensure you cloned it to a directory named ansible-aci.
+Otherwise the playbook will not find the role with name "ansible-aci".
 
-If you installed the role from Galaxy, you should be fine to use the examples from Github.
-
-### Running the example playbook
-Run the following command using Ansible v2.4:
+### Running the playbook
+Run the following command using Ansible v2.13.5:
 
     ansible-playbook -i myinventory.yml myplaybook.yml -v
-
-The first time it will deploy that configuration on your ACI infrastructure.
-
-You can make modifications and run it again as often as you like to modify the existing configuration.
-
-
-## Examples
-
-### Example inventory
-The following is an example of a topology defined in your inventory you can use with this role:
-
-```yaml
-  aci_topology:
-    tenant:
-    - name: Example99
-      description: Example99
-      app:
-      - name: Billing
-        epg:
-        - name: web
-          bd: web_bd
-          contract:
-          - name: internet
-            type: consumer
-          - name: web_app
-            type: consumer
-        - name: app
-          bd: app_bd
-          contract:
-          - name: web_app
-            type: provider
-    bd:
-    - name: app_bd
-      subnet:
-      - name: 10.10.10.1
-        mask: 24
-        scope: private
-      vrf: Example99
-    - name: web_bd
-      subnet:
-      - name: 20.20.20.1
-        mask: 24
-        scope: public
-      vrf: Example99
-    vrf:
-    - name: Example99
-    contract:
-    - name: internet
-      scope: tenant
-      subject:
-      - name: internet
-        filter: default
-    - name: web_app
-      scope: tenant
-      subject:
-      - name: web_app
-        filter: default
-```
-A more comprehensive example is available from: [example-inventory.yaml](example-inventory.yaml)
-
-### Example playbook
-
-```yaml
-- hosts: *apic1
-  gather_facts: no
-  roles:
-  - role: datacenter.aci-model
-    aci_model_data: '{{ aci_topology }}'
-```
-
-## Notes
-- Over time when more ACI modules are released with Ansible, we will swap the **aci_rest** calls with the high-level module calls.
-- Feel free to add additional functionality and share it with us on Github !
-
-
+    
 ## License
 GPLv3
