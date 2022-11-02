@@ -144,16 +144,16 @@ fabric01:
           link_level: LLP-1G
           lldp: LLDP-ENABLE
           aep: BM-PHY-AEP
-#      - switch_policy_vpc_domain:
-#        - name: LEAF101_102
-#          state: present		
-#      - switch_policy_virtual_port_channel:
-#        - name: LEAF101_102
-#          state: present		
-#          id: 10
-#          switch1: 101
-#          switch2: 102
-#          domainpolicy: LEAF101_102
+      - switch_policy_vpc_domain:
+        - name: LEAF101_102
+          state: present		
+      - switch_policy_virtual_port_channel:
+        - name: LEAF101_102
+          state: present		
+          id: 10
+          switch1: 101
+          switch2: 102
+          domainpolicy: LEAF101_102
       - interface_policy_profile:
         - name: INTER-POD-DEV-MAC-LEAF-PRF
           state: present		
