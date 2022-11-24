@@ -152,6 +152,13 @@
       admin_state: '{{ item.access_policy_interface_policy_cdp_admin_state }}'
     with_items: '{{ aci_model_data|aci_listify("access_policy","interface_policy_cdp") }}'
 
+- name: Create MCP policies
+    aci_interface_policy_mcp:
+      <<: *aci_login
+      mcp: '{{ item.access_policy_interface_policy_mcp_name }}'
+      admin_state: '{{ item.access_policy_interface_policy_mcp_admin_state }}'
+    with_items: '{{ aci_model_data|aci_listify("access_policy","interface_policy_mcp") }}'
+    
   - name: Create LLDP interface policies
     aci_intf_policy_lldp:
       <<: *aci_login
