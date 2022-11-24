@@ -90,6 +90,13 @@ fabric01:
         - name: CDP-DISABLE
           state: present		
           admin_state: off
+      - interface_policy_mcp:
+        - name: MCP-ENABLE
+          state: present		
+          admin_state: on
+        - name: MCP-DISABLE
+          state: present		
+          admin_state: off           
       - interface_policy_lldp:
         - name: LLDP-ENABLE
           state: present		
